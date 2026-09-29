@@ -1,0 +1,63 @@
+export | grep ROS
+	opt ros indigo share
+	opt ros indigo stacks
+roscore
+mkdir -P <workspace name>/src
+cd <>/src
+catkin_init_workspace
+cd .. [to get outside from src]
+catkin_make
+[from home directory]
+//source /opt/ros/indigo/setup.bash
+//source /<catkin_ws>/devel/setup.bash
+gedit .bashrc
+[ws/src]catkin_create_pkg lab1 roscpp rospy visualization_msgs
+open package.xml
+
+ros cd
+ros ls
+rosrun turtlesim turtlesim_node
+rosnode list
+rostopic list
+rosnode ping turtlesim
+rosrun rqt_graph rqt_graph
+rostopic info /turtle1/c
+rostopic info /turtle1/cmd_vel
+rosmsg show geometry_msgs
+rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist --'[2.0,0.0,0.0]' '[0.0,0.0,1.0]
+rostopic pub /turtle1/command_velocity turtlesim
+[ROS tuts understanding topics]
+[understanding service paramsd]
+[creatingMsgAndSrv] MyGps.msg [using msg][2.1 creating a msg]
+double64 lat
+double64 lng
+open cmake file in src in package dir
+[from pata nhin kahan se]add the two lines in package.xml :
+	<buidl_dep...>message_generation</...>
+	<rundep> ... message_runtime </>
+for cpp, roscpp should be there
+for py, rospy
+and 3 more lines
+in CMakeLists [in ws/src/lab1]
+
+at approx line 49, uncomment generate
+FILES
+MyGps.msg [only this file should be there]
+
+uncomment services and add ur file instead
+
+catkin_make
+if we do catkin_make in workspace and c the headers made right before ur eyes :D
+NOTE: WHENEVER U BUILD, BUILD WHOLE WORKSPACE
+
+rviz tuts mein pehle example, copy paste [Markers Basic Shapes]
+
+script/cpp file is added in CMakeLists
+
+
+
+demoFile.cpp
+ros::Publisher marker_pub ... visualization marker 1 [this number can be increased]
+if subscribed something [ROS:spin()]
+
+docs ros/groovy/api/visualization_msgs/html/msg/Marker.html [add and modify are not made same]

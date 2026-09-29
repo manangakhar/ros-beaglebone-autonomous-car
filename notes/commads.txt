@@ -1,0 +1,138 @@
+rospack find <roscpp>
+roscd <roscpprs>
+roscd log
+rosls <packagename>
+
+catkin_create_pkg <name> rospy roscpp std_msgs visualization_msgs
+catkin_make
+
+roscore //server = master + rosout + <later>
+rosnode
+	list
+	info <some node from list>
+	machine
+	kill
+	cleanup
+	ping <>
+rosrun [package_name] [node_name]
+//rosrun turtlesim turtlesim_node [__name:=<custom name>]
+//node name = turtle_teleop_key // for controlling
+tele publishes cmd_subscribed vel by node //node topic node
+rosrun rqt_graph rqt_graph //shows the node-topic graph
+rostopic
+	bw
+	echo
+	find
+	hz
+	info
+	list
+	pub
+	type
+rosmsg
+	show <msg type>
+	list
+	md5 <msg type>
+	package <package name> //list of messages
+	packages <msg> //list of packages containing this msg
+
+####rostopic type | rosmsg show
+rostopic type turtle1/cmd_vel
+rosmsg show <what we got above>
+rostopic type /turtle1/cmd_vel | rosmsg show //shortcut
+//it shows the message description (it seems likes the syntax or the data structure it is made of)
+
+####rostopic pub
+rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist -- '[2, 0, 0]' '[0, 0, 1.8]' // [x,0,0] [0,0,x] makes circular arc
+//space is necessary between linear and angular vel
+try -2 instead of -1 //-1 is --once(others are not part of syntax), use -r for rate
+try the following along with the above command having '-r 10'
+rostopic pub -r 5 turtle1/cmd_vel geometry_msgs/Twist -- '[-2,0,0]' '[0,0,-2]' //'r' signifies the rate. so, we can say that the speed of moving forward becomes half as it goes forward and backward but forward is more
+//another observation, the time at which the command is passed also makes a difference as '-r' is related to value in Hz. it can be experimented by giving two same commands of same rate but opposite values. the timing of pressing enter for the second command makes all the difference whether the turtle moves forward or backward :D
+
+####rostopic hz <topic>
+// display publishing rate
+//window2 = rate + window1
+rostopic hz turtle1/pose //rate 60 Hz
+rostopic hz turtle1/cmd_vel //rate provided by -r
+
+####rosrun rqt_plot rqt_plot
+topic: /turtle1/pose //theta ranges from 0-6.28
+//direct running by following
+//rqt_plot /turtle1/pose/x:y:z
+//rqt_plot /turtle1/pose/x /turtle1/pose/y /turtle1/pose/z
+http://wiki.ros.org/rqt_plot
+
+####rosservice
+	args //get args for a service
+	call //execute a service
+	find
+	info
+	list //add '-n'rosservice args to get nodes that implement this service
+	type
+	uri
+	node <service> //get the node implementing this service
+egs: clear, roshi/get_loggers, roshi/set_logger/level, teleop_turtle/get_loggers, teleop_turtle/set_logger_level, turtle1/set_pen, turtle1/teleport_absolute, turtle1/teleport_relative
+
+rosservice type clear //tell us the it needs no args and gives none
+rosservice call clear //clears the path
+rosservice call reset //resets the turtle and even changes the version of turtle ;)
+
+####rossrv
+//what rosmsg is for rostopic, rossrv is for rosservice
+	show
+	list
+	md5
+	package
+	packagesros
+rosservice type spawn | rossrv show //seems it shows the arguments it takes and the output it gives
+rosservice call spawn 2 2 0.2 "<name>" //blank in double quotes returns a name set by the system
+rosservice call kill <turtle2> // removes it
+//the rostopic pub command does not work on new turtle by default
+
+####rosparam
+	set
+	get
+	load
+	dump
+	delete
+	list
+//param types: 1,1.0,"",true,[],{} //mixed list
+rosparam set background_r 150 //modifies the bg color
+rosservice call clear //for changes to take effect
+rosparam get <> // u know what :D
+rosparam get / //gets all
+rosparam dump myParams.yaml //store params in a file
+rosparam load params.yaml copy
+rosparam get copy/background_b
+rosparam set myParameter myValue //custom
+
+####logger
+rosrun rqt_console rqt_console
+rosrun rqt_logger_level rqt_logger_leve //apparently this controls above logs
+
+####msgs
+cd ~/<workspace>/src/<pjt>
+mkdir msg
+echo "int64 num" > msg/Num.msg //example
+//following in package.xml
+<build_depend>message_generation</build_depend>
+<run_depend>message_runtime</run_depend>
+// add 'message_generation' to find_package(...)
+//make sure about following
+catkin_package(
+  ...
+  CATKIN_DEPENDS message_runtime ...
+  ...)
+//add_message_files in xml
+add_message_files(
+  FILES
+  Num.msg //sample msg
+)
+//generate_message in xml
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+##using Msg
+rosmsg show <pjt>/Num
+rosmsg show Num //to get package as well

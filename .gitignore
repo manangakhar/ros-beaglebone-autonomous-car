@@ -1,0 +1,12 @@
+# OS disk images
+*.img
+*.img.xz
+
+# Local build and editor files
+.DS_Store
+__pycache__/
+*.py[cod]
+build/
+devel/
+install/
+.catkin_tools/
